@@ -1,12 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { status } from '../constants/status';
+import { dummy } from '../constants/dummy';
 import {
   AiOutlineSearch,
   AiFillPushpin,
   AiOutlineFileDone,
 } from 'react-icons/ai';
 
-const Header = () => {
+const Header = ({ setOptionValue }: { setOptionValue: any }) => {
+  const [selectedValue, setSelectedValue] = useState<string>();
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedValue(e.target.value);
+    setOptionValue(e.target.value);
+  };
   return (
     <Nav>
       <NavContainer>
@@ -23,13 +30,13 @@ const Header = () => {
           </NavItem>
           <NavItem>
             {/* Todo: 스타일 개선 */}
-            <Select>
-              <option value="" hidden>
+            <Select value={selectedValue} onChange={handleChange}>
+              <option value="placeholder" hidden>
                 Example Placeholder
               </option>
-              <option>시작 안함</option>
-              <option>진행 중</option>
-              <option>완료</option>
+              <option value={status.NOT_STARTED}>시작 안함</option>
+              <option value={status.ONGOING}>진행 중</option>
+              <option value={status.FINISHED}>완료</option>
             </Select>
           </NavItem>
         </NavMenu>
