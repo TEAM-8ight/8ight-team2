@@ -1,7 +1,12 @@
+import MainPage from 'pages/MainPage';
 import React from 'react';
 
 const App = () => {
-  return <div>App.tsx입니다.</div>;
+  return (
+    <div>
+      <MainPage />
+    </div>
+  );
 };
 
 export default App;
