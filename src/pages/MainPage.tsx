@@ -1,13 +1,13 @@
 import React from 'react';
 import Header from 'components/Header';
-import TodoList from './TodoList';
 import styled from 'styled-components';
+import TodoInput from './TodoInput';
 
 const MainPage = () => {
   return (
     <Container>
       <Header />
-      <TodoList />
+      <TodoInput />
     </Container>
   );
 };
