@@ -47,6 +47,7 @@ const Nav = styled.div`
   position: sticky;
   top: 0;
   z-index: 10;
+  background-color: white;
 `;
 
 const NavContainer = styled.div`
