@@ -1,19 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { status } from '../constants/status';
 import { dummy } from '../constants/dummy';
+
 import {
   AiOutlineSearch,
   AiFillPushpin,
   AiOutlineFileDone,
 } from 'react-icons/ai';
 
-const Header = ({ setOptionValue }: { setOptionValue: any }) => {
+const Header = ({ todos, handleStatusFilter }: any) => {
   const [selectedValue, setSelectedValue] = useState<string>();
+  const [, setFilteredTodos] = useState<any>([]);
+
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedValue(e.target.value);
-    setOptionValue(e.target.value);
+
+    const matchValues = [...todos].filter((todo: any) =>
+      todo.status.includes(e.target.value),
+    );
+
+    setFilteredTodos(matchValues);
+    handleStatusFilter(matchValues);
   };
+
   return (
     <Nav>
       <NavContainer>
@@ -31,9 +41,7 @@ const Header = ({ setOptionValue }: { setOptionValue: any }) => {
           <NavItem>
             {/* Todo: 스타일 개선 */}
             <Select value={selectedValue} onChange={handleChange}>
-              <option value="placeholder" hidden>
-                Example Placeholder
-              </option>
+              <option value="">상태 선택</option>
               <option value={status.NOT_STARTED}>시작 안함</option>
               <option value={status.ONGOING}>진행 중</option>
               <option value={status.FINISHED}>완료</option>

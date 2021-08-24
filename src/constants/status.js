@@ -1,5 +1,5 @@
 export const status = {
   FINISHED: '완료',
-  ONGOING: '진행중',
-  NOT_STARTED: '시작안함',
+  ONGOING: '진행 중',
+  NOT_STARTED: '시작 안함',
 };

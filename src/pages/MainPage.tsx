@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from 'components/Header';
 import TodoList from './TodoList';
 import styled from 'styled-components';
+import { dummy } from '../constants/dummy';
 
 const MainPage = () => {
-  const [optionValue, setOptionValue] = useState('');
+  const [selected, setSelected] = useState<any>([...dummy]);
+
+  const handleStatusFilter = (filteredTodos: any) => {
+    setSelected(filteredTodos);
+  };
+
   return (
     <Container>
-      <Header setOptionValue={setOptionValue} />
-      <TodoList optionValue={optionValue} />
+      <Header todos={[...dummy]} handleStatusFilter={handleStatusFilter} />
+      <TodoList selected={selected} />
     </Container>
   );
 };

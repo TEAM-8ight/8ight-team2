@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { dummy } from 'constants/dummy';
 import styled from 'styled-components';
 
-const TodoList = ({ optionValue }: { optionValue: string }) => {
+const TodoList = ({ selected }: any) => {
   interface todoType {
     id: number;
     taskName: string;
@@ -19,27 +18,13 @@ const TodoList = ({ optionValue }: { optionValue: string }) => {
   const { id, taskName, isComplete } = todoState;
   return (
     <Container>
-      {optionValue
-        ? dummy
-            .filter((item) => item.status === optionValue)
-            .map((item) => (
-              <ListItem key={item.id}>
-                <input
-                  type="checkbox"
-                  name="isComplete"
-                  value={item.taskName}
-                />
-                <span>Todo: {item.taskName}</span>
-                <span>상태: {item.status}</span>
-              </ListItem>
-            ))
-        : dummy.map((item) => (
-            <ListItem key={item.id}>
-              <input type="checkbox" name="isComplete" value={item.taskName} />
-              <span>Todo: {item.taskName}</span>
-              <span>상태: {item.status}</span>
-            </ListItem>
-          ))}
+      {selected.map((item: any) => (
+        <ListItem key={item.id}>
+          <input type="checkbox" name="isComplete" value={item.taskName} />
+          <span>Todo: {item.taskName}</span>
+          <span>상태: {item.status}</span>
+        </ListItem>
+      ))}
     </Container>
   );
 };
