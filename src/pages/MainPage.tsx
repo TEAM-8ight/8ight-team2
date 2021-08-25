@@ -3,7 +3,6 @@ import Header from 'components/Header';
 import styled from 'styled-components';
 import TodoInput from './TodoInput';
 
-
 const MainPage = () => {
   const [selected, setSelected] = useState<any>([]);
 
