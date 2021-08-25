@@ -99,11 +99,8 @@ const TodoInput = ({ selected }: any) => {
         <InputButton onClick={handleClick}>할일 추가</InputButton>
         {errorMsg && <ErrorMsg>{errorMsg}</ErrorMsg>}
       </CreateForm>
-      <TodoList
-        createState={createState}
-        setCreateState={setCreateState}
-        selected={selected}
-      />
+
+      <TodoList createState={createState} setCreateState={setCreateState} />
     </Container>
   );
 };
