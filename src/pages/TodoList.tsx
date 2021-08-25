@@ -1,33 +1,45 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { todoType } from './TodoInput';
+import { AiFillDelete } from "react-icons/ai"
 
-const TodoList = ({ selected }: any) => {
-  interface todoType {
-    id: number;
-    taskName: string;
-    isComplete: boolean;
-    status: string;
-  }
-  const [todoState, setTodoState] = useState<todoType>({
-    id: 1,
-    taskName: '',
-    isComplete: false,
-    status: '',
-  });
 
-  const { id, taskName, isComplete } = todoState;
-  return (
-    <Container>
-      {selected.map((item: any) => (
-        <ListItem key={item.id}>
-          <input type="checkbox" name="isComplete" value={item.taskName} />
-          <span>Todo: {item.taskName}</span>
-          <span>상태: {item.status}</span>
-        </ListItem>
-      ))}
-    </Container>
-  );
-};
+interface TodoCreateProps {
+    createState: todoType[];
+    setCreateState: React.Dispatch<React.SetStateAction<todoType[]>>;
+}
+
+
+
+const TodoList = ({ createState, setCreateState }: TodoCreateProps) => {
+
+    const handleDelete = (id: number) => {
+        setCreateState(prevState => (
+            prevState.filter((item: todoType) => (
+                item.id !== id
+            )
+            )
+        ))
+
+    }
+
+    return (
+        <Container>
+            {createState.map((item) => (
+                <ListItem key={item.id}>
+                    <input type="checkbox" name="isComplete" value={item.taskName} />
+                    <span>{item.taskName}</span>
+                    <span>{item.status}</span>
+                    <span>{item.createdAt}</span>
+                    <DeleteButton onClick={() => handleDelete(item.id)}>
+                        <AiFillDelete size={20} />
+                    </DeleteButton>
+                </ListItem>
+            ))}
+        </Container>
+    )
+}
+
 
 const Container = styled.article`
   text-align: center;
@@ -35,19 +47,32 @@ const Container = styled.article`
 `;
 
 const ListItem = styled.section`
-  display: flex;
-  justify-content: flex-start;
-  border-bottom: 1px solid black;
-  padding: 20px;
-  width: 100%;
-  input {
-    width: 20%;
-    text-align: left;
-  }
-  span {
-    width: 80%;
-    text-align: left;
-  }
-`;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-bottom:1px solid black;
+    padding: 20px;
+    width: 100%;
+    :last-child{
+        border:0;
+    }
+    input{
+        width: 20%;
+        text-align: left;
+    }
+    span{
+        width: 80%;
+        text-align: left;
+    }
 
-export default TodoList;
+`
+
+const DeleteButton = styled.button`
+    cursor: pointer;
+    svg{
+        width: 50px;    
+    }
+`
+
+export default TodoList
+
