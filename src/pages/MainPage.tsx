@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Header from 'components/Header';
 import styled from 'styled-components';
-import { dummy } from '../constants/dummy';
 import TodoInput from './TodoInput';
-import TodoList from './TodoList';
 
 const MainPage = () => {
-  const [selected, setSelected] = useState<any>([...dummy]);
+  const [selected, setSelected] = useState<any>([]);
 
   const handleStatusFilter = (filteredTodos: any) => {
     setSelected(filteredTodos);
@@ -14,8 +12,7 @@ const MainPage = () => {
 
   return (
     <Container>
-      <Header todos={[...dummy]} handleStatusFilter={handleStatusFilter} />
-      <TodoList selected={selected} />
+      <Header handleStatusFilter={handleStatusFilter} />
       <TodoInput />
     </Container>
   );

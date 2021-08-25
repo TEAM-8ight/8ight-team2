@@ -1,24 +1,23 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { AiFillDelete } from 'react-icons/ai';
 import { todoType } from './TodoInput';
+import { AiFillDelete } from 'react-icons/ai';
 
 interface TodoCreateProps {
   createState: todoType[];
   setCreateState: React.Dispatch<React.SetStateAction<todoType[]>>;
-  selected: any;
 }
 
-const TodoList = ({ createState, setCreateState, selected }: any) => {
+const TodoList = ({ createState, setCreateState }: TodoCreateProps) => {
   const handleDelete = (id: number) => {
-    setCreateState((prevState: any) =>
+    setCreateState((prevState) =>
       prevState.filter((item: todoType) => item.id !== id),
     );
   };
 
   return (
     <Container>
-      {createState?.map((item: any) => (
+      {createState.map((item) => (
         <ListItem key={item.id}>
           <input type="checkbox" name="isComplete" value={item.taskName} />
           <span>{item.taskName}</span>
