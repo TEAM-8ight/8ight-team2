@@ -3,18 +3,16 @@ import Header from 'components/Header';
 import styled from 'styled-components';
 import TodoInput from './TodoInput';
 
-
 const MainPage = () => {
-  const [selected, setSelected] = useState<any>([]);
-
+  const storage = JSON.parse(localStorage.getItem('todos') || '[]');
+  const [selected, setSelected] = useState<any>([...storage]);
   const handleStatusFilter = (filteredTodos: any) => {
     setSelected(filteredTodos);
   };
-
   return (
     <Container>
-      <Header handleStatusFilter={handleStatusFilter} />
-      <TodoInput />
+      <Header todos={[...storage]} handleStatusFilter={handleStatusFilter} />
+      <TodoInput selected={selected} />
     </Container>
   );
 };
