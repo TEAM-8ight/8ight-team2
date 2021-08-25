@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { todoType } from './TodoInput';
 import { AiFillDelete } from "react-icons/ai"
+
 
 interface TodoCreateProps {
     createState: todoType[];
@@ -39,11 +40,11 @@ const TodoList = ({ createState, setCreateState }: TodoCreateProps) => {
     )
 }
 
-const Container = styled.article`
-    text-align: center;
-    border:1px solid black;
 
-`
+const Container = styled.article`
+  text-align: center;
+  border: 1px solid black;
+`;
 
 const ListItem = styled.section`
     display: flex;
@@ -74,3 +75,4 @@ const DeleteButton = styled.button`
 `
 
 export default TodoList
+
