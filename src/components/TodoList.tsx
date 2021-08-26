@@ -164,9 +164,10 @@ const TodoList = ({
               <span>{item.createdAt}</span>
             </ListItem>
             <StatusSelect name="status" onChange={(e) => handleStatusChange(e, item.id)}>
-              <option value="시작안함">시작안함</option>
-              <option value="완료">완료</option>
-              <option value="진행중">진행중</option>
+              <option value="시작안함">{item.status || "시작안함"}</option>
+              {item.status === '시작안함' ? '' : <option value="시작안함">시작안함</option>}
+              {item.status === '완료' ? '' : <option value="완료">완료</option>}
+              {item.status === '진행중' ? '' : <option value="진행중">진행중</option>}
             </StatusSelect>
 
             <ImportanceSelect
