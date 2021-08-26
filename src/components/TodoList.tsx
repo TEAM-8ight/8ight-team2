@@ -104,7 +104,7 @@ const TodoList = ({
     );
   };
 
-  const handleChange = (
+  const handleImportanceChange = (
     e: React.ChangeEvent<HTMLSelectElement>,
     id: number,
   ) => {
@@ -122,6 +122,21 @@ const TodoList = ({
     );
   };
 
+  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>, id: number,) => {
+    const { value } = e.target;
+    setSelected((prevState: todoType[]) =>
+      prevState.map((todo: todoType) => {
+        if (todo.id === id) {
+          return {
+            ...todo,
+            status: value,
+          };
+        }
+        return todo;
+      })
+    )
+  }
+
   return (
     <Container onDragOver={onDragOver}>
       {selected.map((item, i) => {
@@ -132,9 +147,10 @@ const TodoList = ({
         dragData.moveUp.includes(i) && (defaultClass = 'move_up');
 
         return (
-          <ListContainer>
+          <ListContainer key={item.id}>
+            <input type="checkbox" name="isComplete" value={item.taskName} />
+
             <ListItem
-              key={item.id}
               data-index={i}
               draggable
               onDragStart={onDragStart}
@@ -144,24 +160,27 @@ const TodoList = ({
               className={defaultClass}
               isDrag={isDrag}
             >
-              <input type="checkbox" name="isComplete" value={item.taskName} />
               <span>{item.taskName}</span>
-              <span>{item.importance}</span>
-              <span>{item.status}</span>
               <span>{item.createdAt}</span>
             </ListItem>
-            <DeleteButton onClick={() => handleDelete(item.id)}>
-              <AiFillDelete size={20} />
-            </DeleteButton>
+            <StatusSelect name="status" onChange={(e) => handleStatusChange(e, item.id)}>
+              <option value="시작안함">시작안함</option>
+              <option value="완료">완료</option>
+              <option value="진행중">진행중</option>
+            </StatusSelect>
+
             <ImportanceSelect
               name="importance"
-              onChange={(e) => handleChange(e, item.id)}
+              onChange={(e) => handleImportanceChange(e, item.id)}
             >
-              <option value="중요도">{item.importance || '중요도'}</option>
+              <option value="중요도">{item.importance || "중요도"}</option>
               {item.importance === '상' ? '' : <option value="상">상</option>}
               {item.importance === '중' ? '' : <option value="중">중</option>}
               {item.importance === '하' ? '' : <option value="하">하</option>}
             </ImportanceSelect>
+            <DeleteButton onClick={() => handleDelete(item.id)}>
+              <AiFillDelete size={20} />
+            </DeleteButton>
           </ListContainer>
         );
       })}
@@ -183,6 +202,7 @@ const ListContainer = styled.div`
   :not(:last-child) {
     border-bottom: 1px solid black;
   }
+  padding: 10px 20px;
 `;
 
 const ListItem = styled.li<{ isDrag: boolean }>`
@@ -234,8 +254,13 @@ const DeleteButton = styled.button`
   }
 `;
 
+const StatusSelect = styled.select`
+width: 80px;
+margin-right: 10px;
+`
+
 const ImportanceSelect = styled.select`
-  width: 80px;
+  width: 100px;
 `;
 
 export default TodoList;

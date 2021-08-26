@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Header from 'components/Header';
 import TodoList from '../components/TodoList';
-import { importance } from '../constants/importance';
 import styled from 'styled-components';
+import { status } from 'constants/status';
 
-const status = {
-  FINISHED: '완료',
-  ONGOING: '진행중',
-  NOT_STARTED: '시작안함',
-};
+
 
 export interface todoType {
   id: number;
@@ -36,7 +32,6 @@ const MainPage = () => {
   const handleStatusFilter = (filteredTodos: any) => {
     setSelected(filteredTodos);
   };
-  console.log(selected);
   let initialTodos: todoType[] = [];
   const id: number = Date.now();
 
@@ -58,7 +53,7 @@ const MainPage = () => {
       isComplete: false,
       createdAt: getFormatDate(today),
       updatedAt: '',
-      importance: importance.INTERMEDIATE,
+      importance: "",
     });
 
     setValue('');
@@ -70,7 +65,6 @@ const MainPage = () => {
       return;
     }
     setErrorMsg('');
-    // todo validatation
   };
 
   const createList = (todo: todoType) => {
