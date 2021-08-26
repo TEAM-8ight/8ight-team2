@@ -13,6 +13,7 @@ export interface todoType {
   taskName: string;
   status: string;
   isComplete: boolean;
+  importance: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -46,6 +47,7 @@ const TodoInput = () => {
       taskName: value,
       status: status.NOT_STARTED,
       isComplete: false,
+      importance: '',
       createdAt: getFormatDate(today),
       updatedAt: '',
     });
@@ -59,7 +61,6 @@ const TodoInput = () => {
       return;
     }
     setErrorMsg('');
-    // todo validatation
   };
 
   const createList = (todo: todoType) => {

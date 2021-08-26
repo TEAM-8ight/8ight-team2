@@ -97,7 +97,23 @@ const TodoList = ({ createState, setCreateState }: TodoCreateProps) => {
     );
   };
 
-  console.log(createState);
+  const handleChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    id: number,
+  ) => {
+    const { value } = e.target;
+    setCreateState((prevState) =>
+      prevState.map((todo: todoType) => {
+        if (todo.id === id) {
+          return {
+            ...todo,
+            importance: value,
+          };
+        }
+        return todo;
+      }),
+    );
+  };
 
   return (
     <Container onDragOver={onDragOver}>
@@ -126,8 +142,17 @@ const TodoList = ({ createState, setCreateState }: TodoCreateProps) => {
               <span>{item.status}</span>
               <span>{item.createdAt}</span>
             </ListItem>
-            <DeleteButton onClick={() => handleDelete(item.id)}>
-              <AiFillDelete size={20} />
+            <DeleteButton>
+              <select
+                name="importance"
+                onChange={(e) => handleChange(e, item.id)}
+              >
+                <option value="">중요도</option>
+                <option value="상">상</option>
+                <option value="중">중</option>
+                <option value="하">하</option>
+              </select>
+              <AiFillDelete size={20} onClick={() => handleDelete(item.id)} />
             </DeleteButton>
           </div>
         );
@@ -188,6 +213,8 @@ const ListItem = styled.li<{ isDrag: boolean }>`
 `;
 
 const DeleteButton = styled.button`
+  display: flex;
+
   cursor: pointer;
   svg {
     width: 50px;
