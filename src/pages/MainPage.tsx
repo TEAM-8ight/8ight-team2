@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from 'components/Header';
 import styled from 'styled-components';
 import TodoInput from './TodoInput';
@@ -10,6 +10,7 @@ const MainPage = () => {
   const handleStatusFilter = (filteredTodos: any) => {
     setSelected(filteredTodos);
   };
+
   return (
     <Container>
       <Header todos={[...storage]} handleStatusFilter={handleStatusFilter} />

@@ -9,29 +9,41 @@ import {
 } from 'react-icons/ai';
 
 const Header = ({ todos, handleStatusFilter }: any) => {
-  const [filterByImportance, setFilterByImportance] = useState<string>();
-  const [filterByStatus, setFilterByStatus] = useState<string>();
-  const [, setFilteredTodos] = useState<any>([]);
+  const [filterByImportance, setFilterByImportance] = useState<any>([]);
+  const [filterByStatus, setFilterByStatus] = useState<any>([...todos]);
+  const [filteredTodos, setFilteredTodos] = useState<any>([...todos]);
   const handleFilterByImportance = (
     e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     setFilterByImportance(e.target.value);
+
+    const matchValues = [...filterByStatus].filter((todo: any) =>
+      todo.importance.includes(e.target.value),
+    );
+
+    setFilterByImportance(matchValues);
+    handleStatusFilter(matchValues);
   };
 
   const handleFilterByStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFilterByStatus(e.target.value);
+    const matchValues = [...todos].filter((todo: any) =>
+      todo.status.includes(e.target.value),
+    );
+
+    setFilterByStatus(matchValues);
+    handleStatusFilter(matchValues);
   };
 
-  useEffect(() => {
-    const matchValues = [...todos].filter(
-      (todo: any) =>
-        (!filterByImportance || todo.importance === filterByImportance) &&
-        (!filterByStatus || todo.status === filterByStatus),
-    );
-    console.log('matchValues', matchValues);
-    setFilteredTodos(matchValues);
-    handleStatusFilter(matchValues);
-  }, [filterByStatus, filterByImportance]);
+  // useEffect(() => {
+  //   const matchValues = [...todos].filter(
+  //     (todo: any) =>
+  //       (!filterByImportance || todo.importance === filterByImportance) &&
+  //       (!filterByStatus || todo.status === filterByStatus),
+  //   );
+  //   console.log('matchValues', matchValues);
+  //   setFilteredTodos(matchValues);
+  //   handleStatusFilter(matchValues);
+  // }, [filterByStatus, filterByImportance]);
 
   return (
     <Nav>
@@ -51,7 +63,7 @@ const Header = ({ todos, handleStatusFilter }: any) => {
             {/* Todo: 스타일 개선 */}
             <Select
               name="importance"
-              defaultValue={filterByImportance}
+              // defaultValue={filterByImportance}
               onChange={handleFilterByImportance}
             >
               <option value="">중요도 선택</option>
@@ -61,7 +73,7 @@ const Header = ({ todos, handleStatusFilter }: any) => {
             </Select>
             <Select
               name="status"
-              defaultValue={filterByStatus}
+              // defaultValue={filterByStatus}
               onChange={handleFilterByStatus}
             >
               <option value="">상태 선택</option>

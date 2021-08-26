@@ -102,8 +102,6 @@ const TodoList = ({
     );
   };
 
-  console.log(createState);
-
   return (
     <Container onDragOver={onDragOver}>
       {selected
@@ -143,7 +141,7 @@ const TodoList = ({
               </div>
             );
           })
-        : createState.map((item, i) => {
+        : createState?.map((item, i) => {
             let defaultClass = '';
 
             dragData.moveDown.includes(i) && (defaultClass = 'move_down');
