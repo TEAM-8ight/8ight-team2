@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { status } from '../constants/status';
-import { dummy } from '../constants/dummy';
-
+import { importance } from '../constants/importance';
 import {
   AiOutlineSearch,
   AiFillPushpin,
@@ -10,19 +9,41 @@ import {
 } from 'react-icons/ai';
 
 const Header = ({ todos, handleStatusFilter }: any) => {
-  const [selectedValue, setSelectedValue] = useState<string>();
-  const [, setFilteredTodos] = useState<any>([]);
+  const [filterByImportance, setFilterByImportance] = useState<any>([]);
+  const [filterByStatus, setFilterByStatus] = useState<any>([...todos]);
+  const [filteredTodos, setFilteredTodos] = useState<any>([...todos]);
+  const handleFilterByImportance = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    setFilterByImportance(e.target.value);
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedValue(e.target.value);
+    const matchValues = [...filterByStatus].filter((todo: any) =>
+      todo.importance.includes(e.target.value),
+    );
 
+    setFilterByImportance(matchValues);
+    handleStatusFilter(matchValues);
+  };
+
+  const handleFilterByStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const matchValues = [...todos].filter((todo: any) =>
       todo.status.includes(e.target.value),
     );
 
-    setFilteredTodos(matchValues);
+    setFilterByStatus(matchValues);
     handleStatusFilter(matchValues);
   };
+
+  // useEffect(() => {
+  //   const matchValues = [...todos].filter(
+  //     (todo: any) =>
+  //       (!filterByImportance || todo.importance === filterByImportance) &&
+  //       (!filterByStatus || todo.status === filterByStatus),
+  //   );
+  //   console.log('matchValues', matchValues);
+  //   setFilteredTodos(matchValues);
+  //   handleStatusFilter(matchValues);
+  // }, [filterByStatus, filterByImportance]);
 
   return (
     <Nav>
@@ -40,11 +61,25 @@ const Header = ({ todos, handleStatusFilter }: any) => {
           </NavItem>
           <NavItem>
             {/* Todo: 스타일 개선 */}
-            <Select value={selectedValue} onChange={handleChange}>
+            <Select
+              name="importance"
+              // defaultValue={filterByImportance}
+              onChange={handleFilterByImportance}
+            >
+              <option value="">중요도 선택</option>
+              <option value={importance.HIGH}>상</option>
+              <option value={importance.INTERMEDIATE}>중</option>
+              <option value={importance.LOW}>하</option>
+            </Select>
+            <Select
+              name="status"
+              // defaultValue={filterByStatus}
+              onChange={handleFilterByStatus}
+            >
               <option value="">상태 선택</option>
-              <option value={status.NOT_STARTED}>시작 안함</option>
-              <option value={status.ONGOING}>진행 중</option>
-              <option value={status.FINISHED}>완료</option>
+              <option value={status.NOT_STARTED}>시작안함</option>
+              <option value={status.ONGOING}>진행중</option>
+              <option value={status.FINISHED}>완료함</option>
             </Select>
           </NavItem>
         </NavMenu>
@@ -121,7 +156,7 @@ const NavItem = styled.li`
 `;
 
 const Select = styled.select`
-  width: 200px;
+  width: 100px;
   padding: 0.8em 0.5em;
   border: 1px solid #999;
   font-family: inherit;
