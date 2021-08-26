@@ -97,7 +97,7 @@ const TodoList = ({ createState, setCreateState }: TodoCreateProps) => {
         );
     };
 
-    const handleChange = (
+    const handleImportanceChange = (
         e: React.ChangeEvent<HTMLSelectElement>,
         id: number,
     ) => {
@@ -115,9 +115,11 @@ const TodoList = ({ createState, setCreateState }: TodoCreateProps) => {
         );
     };
 
+    const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>, id: number,) => { }
+
     return (
         <Container onDragOver={onDragOver}>
-            {createState.map((item, i) => {
+            {createState?.map((item, i) => {
                 let defaultClass = '';
 
                 dragData.moveDown.includes(i) && (defaultClass = 'move_down');
@@ -125,9 +127,9 @@ const TodoList = ({ createState, setCreateState }: TodoCreateProps) => {
                 dragData.moveUp.includes(i) && (defaultClass = 'move_up');
 
                 return (
-                    <ListContainer >
+                    <ListContainer key={item.id}>
+                        <input type="checkbox" name="isComplete" value={item.taskName} />
                         <ListItem
-                            key={item.id}
                             data-index={i}
                             draggable
                             onDragStart={onDragStart}
@@ -137,13 +139,16 @@ const TodoList = ({ createState, setCreateState }: TodoCreateProps) => {
                             className={defaultClass}
                             isDrag={isDrag}
                         >
-                            <input type="checkbox" name="isComplete" value={item.taskName} />
                             <span>{item.taskName}</span>
-                            <span>{item.status}</span>
                             <span>{item.createdAt}</span>
                         </ListItem>
+                        <StatusSelect name="status" onChange={(e) => handleStatusChange(e, item.id)}>
+                            <option value="시작안함">{item.status || "시작안함"}</option>
+                            {item.status === "완료" ? "" : <option value="완료">완료</option>}
+                            {item.status === "진행중" ? "" : <option value="진행중">진행중</option>}
+                        </StatusSelect>
                         <DeleteButton>
-                            <ImportanceSelect name="importance" onChange={(e) => handleChange(e, item.id)}>
+                            <ImportanceSelect name="importance" onChange={(e) => handleImportanceChange(e, item.id)}>
                                 <option value="중요도">{item.importance || "중요도"}</option>
                                 {item.importance === "상" ? "" : <option value="상">상</option>}
                                 {item.importance === "중" ? "" : <option value="중">중</option>}
@@ -172,20 +177,17 @@ const ListContainer = styled.div`
     :not(:last-child){
         border-bottom:1px solid black;
     }
+    padding: 10px 20px;
 `
 
 const ListItem = styled.li<{ isDrag: boolean }>`
-  width: 760px;
+  width: 100%;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
   align-items: center;
   padding: 15px 8px;
   user-select: none;
   touch-action: none;
   cursor: grab;
-  height: 66px;
-
   ${(props) => props.isDrag && 'transition: transform 200ms ease 0s'};
 
   /* &.move_up {
@@ -222,6 +224,11 @@ const DeleteButton = styled.button`
     width: 50px;
   }
 `;
+
+const StatusSelect = styled.select`
+width: 80px;
+margin-right: 10px;
+`
 
 const ImportanceSelect = styled.select`
     width: 80px;

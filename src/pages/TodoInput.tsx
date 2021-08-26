@@ -3,103 +3,105 @@ import styled from 'styled-components';
 import TodoList from './TodoList';
 
 const status = {
-  FINISHED: '완료',
-  ONGOING: '진행중',
-  NOT_STARTED: '시작안함',
+    FINISHED: '완료',
+    ONGOING: '진행중',
+    NOT_STARTED: '시작안함',
 };
 
 export interface todoType {
-  id: number;
-  taskName: string;
-  status: string;
-  isComplete: boolean;
-  importance: string;
-  createdAt: string;
-  updatedAt: string;
+    id: number;
+    taskName: string;
+    status: string;
+    isComplete: boolean;
+    importance: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 const getFormatDate = (date: Date) => {
-  let year: number = date.getFullYear();
-  let month: string | number = 1 + date.getMonth();
-  month = month >= 10 ? month : '0' + month;
-  let day: string | number = date.getDate();
-  day = day >= 10 ? day : '0' + day;
-  return [year, month, day].join('-');
+    let year: number = date.getFullYear();
+    let month: string | number = 1 + date.getMonth();
+    month = month >= 10 ? month : '0' + month;
+    let day: string | number = date.getDate();
+    day = day >= 10 ? day : '0' + day;
+    return [year, month, day].join('-');
 };
 
 const TodoInput = () => {
-  let initialTodos: todoType[] = [];
-  const id: number = Date.now();
+    let initialTodos: todoType[] = [];
+    const id: number = Date.now();
 
-  const [value, setValue] = useState<string>('');
-  const [createState, setCreateState] = useState(initialTodos);
-  const [errorMsg, setErrorMsg] = useState<string>('');
+    const [value, setValue] = useState<string>('');
+    const [createState, setCreateState] = useState(initialTodos);
+    const [errorMsg, setErrorMsg] = useState<string>('');
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (value === '') {
-      return;
-    }
-    const today: Date = new Date();
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (value === '') {
+            return;
+        }
 
-    createList({
-      id,
-      taskName: value,
-      status: status.NOT_STARTED,
-      isComplete: false,
-      importance: '',
-      createdAt: getFormatDate(today),
-      updatedAt: '',
-    });
+        const today: Date = new Date();
 
-    setValue('');
-  };
+        createList({
+            id,
+            taskName: value,
+            status: status.NOT_STARTED,
+            isComplete: false,
+            importance: '',
+            createdAt: getFormatDate(today),
+            updatedAt: '',
+        });
 
-  const handleClick = () => {
-    if (value === '') {
-      setErrorMsg('내용을 입력하세요');
-      return;
-    }
-    setErrorMsg('');
-  };
+        setValue('');
+    };
 
-  const createList = (todo: todoType) => {
-    setCreateState((prevState) =>
-      [
-        {
-          ...todo,
-          id,
-        },
-      ].concat(prevState),
+    const handleClick = () => {
+        if (value === '') {
+            setErrorMsg('내용을 입력하세요');
+            return;
+        }
+        setErrorMsg('');
+    };
+
+    const createList = (todo: todoType) => {
+        setCreateState((prevState) =>
+            [
+                {
+                    ...todo,
+                    id,
+                },
+            ].concat(prevState),
+        );
+    };
+
+    useEffect(() => {
+        let data = localStorage.getItem('todos');
+
+        if (data === null) {
+            data = '[]';
+        }
+        setCreateState(JSON.parse(data!));
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('todos', JSON.stringify(createState));
+    }, [createState]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+        setValue(value);
+    };
+    return (
+        <Container>
+            <CreateForm onSubmit={handleSubmit}>
+                <Input placeholder="할일 적기" value={value} onChange={handleChange} />
+                <InputButton onClick={handleClick}>할일 추가</InputButton>
+                {errorMsg && <ErrorMsg>{errorMsg}</ErrorMsg>}
+            </CreateForm>
+            <TodoList createState={createState} setCreateState={setCreateState} />
+        </Container>
     );
-  };
-
-  useEffect(() => {
-    let data = localStorage.getItem('todos');
-    if (data === undefined) {
-      data = '';
-    }
-    setCreateState(JSON.parse(data!));
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(createState));
-  }, [createState]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setValue(value);
-  };
-  return (
-    <Container>
-      <CreateForm onSubmit={handleSubmit}>
-        <Input placeholder="할일 적기" value={value} onChange={handleChange} />
-        <InputButton onClick={handleClick}>할일 추가</InputButton>
-        {errorMsg && <ErrorMsg>{errorMsg}</ErrorMsg>}
-      </CreateForm>
-      <TodoList createState={createState} setCreateState={setCreateState} />
-    </Container>
-  );
 };
 
 const Container = styled.div``;
