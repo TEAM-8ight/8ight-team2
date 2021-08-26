@@ -1,104 +1,232 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { todoType } from './TodoInput';
-import { AiFillDelete } from "react-icons/ai"
-
+import { AiFillDelete } from 'react-icons/ai';
 
 interface TodoCreateProps {
     createState: todoType[];
     setCreateState: React.Dispatch<React.SetStateAction<todoType[]>>;
 }
 
-
+const initialDragData = {
+    target: null,
+    index: -1,
+    moveUp: [],
+    moveDown: [],
+    updateList: [],
+};
 
 const TodoList = ({ createState, setCreateState }: TodoCreateProps) => {
+    const [dragData, setDragData] = useState<any>(initialDragData);
+    const [isDrag, setIsDrag] = useState<boolean>(false);
+
+    const onDragOver = (e: any) => {
+        e.stopPropagation();
+        e.preventDefault();
+        return true;
+    };
+
+    const onDragStart = (e: any) => {
+        setIsDrag(true);
+
+        setDragData({
+            ...dragData,
+            target: e.target,
+            index: Number(e.target.dataset.index),
+            updateList: [...createState],
+        });
+
+        e.dataTransfer.setData('text/html', '');
+        e.dataTransfer.effectAllowed = 'move';
+    };
+
+    const onDragEnter = (e: any) => {
+        let dragged = Number(dragData.target.dataset.index);
+        let draggedIndex = Number(dragData.index);
+        let targetIndex = Number(e.target.dataset.index);
+
+        let moveUp = [...dragData.moveUp];
+        let moveDown = [...dragData.moveDown];
+
+        let data = [...dragData.updateList];
+        data[draggedIndex] = data.splice(targetIndex, 1, data[draggedIndex])[0];
+
+        if (dragged > targetIndex) {
+            moveDown.includes(targetIndex)
+                ? moveDown.pop()
+                : moveDown.push(targetIndex);
+        } else if (dragged < targetIndex) {
+            moveUp.includes(targetIndex) ? moveUp.pop() : moveUp.push(targetIndex);
+        } else {
+            moveUp = [];
+            moveDown = [];
+        }
+        setDragData({
+            ...dragData,
+            updateList: data,
+            index: targetIndex,
+            moveUp,
+            moveDown,
+        });
+    };
+
+    const onDragLeave = (e: any) => {
+        if (e.target === dragData.target) {
+            e.target.style.visibility = 'hidden';
+        }
+    };
+
+    const onDragEnd = (e: any) => {
+        setIsDrag(false);
+        setCreateState([...dragData.updateList]);
+
+        setDragData({
+            ...dragData,
+            move_down: [],
+            move_up: [],
+            updateLists: [],
+        });
+
+        e.target.style.visibility = 'visible';
+        e.dataTransfer.dropEffect = 'move';
+    };
 
     const handleDelete = (id: number) => {
-        setCreateState(prevState => (
-            prevState.filter((item: todoType) => (
-                item.id !== id
-            )
-            )
-        ))
+        setCreateState((prevState) =>
+            prevState.filter((item: todoType) => item.id !== id),
+        );
+    };
 
-    }
-
-    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>, id: number) => {
-        const { value } = e.target
-        setCreateState((prevState) => prevState.map((todo: todoType) => {
-            if (todo.id === id) {
-                return {
-                    ...todo,
-                    importance: value
+    const handleChange = (
+        e: React.ChangeEvent<HTMLSelectElement>,
+        id: number,
+    ) => {
+        const { value } = e.target;
+        setCreateState((prevState) =>
+            prevState.map((todo: todoType) => {
+                if (todo.id === id) {
+                    return {
+                        ...todo,
+                        importance: value,
+                    };
                 }
-            }
-            return todo
-        }))
-    }
-
-
-
+                return todo;
+            }),
+        );
+    };
 
     return (
-        <Container>
-            {createState.map((item) => (
-                <ListItem key={item.id}>
-                    <input type="checkbox" name="isComplete" value={item.taskName} />
-                    <span>{item.taskName}</span>
-                    <span>{item.status}</span>
-                    <span>{item.createdAt}</span>
-                    <ImportanceSelect name="importance" onChange={(e) => handleChange(e, item.id)}>
-                        <option value="중요도">{item.importance || "중요도"}</option>
-                        {item.importance === "상" ? "" : <option value="상">상</option>}
-                        {item.importance === "중" ? "" : <option value="중">중</option>}
-                        {item.importance === "하" ? "" : <option value="하">하</option>}
-                    </ImportanceSelect>
-                    <DeleteButton onClick={() => handleDelete(item.id)}>
-                        <AiFillDelete size={20} />
-                    </DeleteButton>
-                </ListItem>
-            ))}
+        <Container onDragOver={onDragOver}>
+            {createState.map((item, i) => {
+                let defaultClass = '';
+
+                dragData.moveDown.includes(i) && (defaultClass = 'move_down');
+
+                dragData.moveUp.includes(i) && (defaultClass = 'move_up');
+
+                return (
+                    <ListContainer >
+                        <ListItem
+                            key={item.id}
+                            data-index={i}
+                            draggable
+                            onDragStart={onDragStart}
+                            onDragEnter={onDragEnter}
+                            onDragLeave={onDragLeave}
+                            onDragEnd={onDragEnd}
+                            className={defaultClass}
+                            isDrag={isDrag}
+                        >
+                            <input type="checkbox" name="isComplete" value={item.taskName} />
+                            <span>{item.taskName}</span>
+                            <span>{item.status}</span>
+                            <span>{item.createdAt}</span>
+                        </ListItem>
+                        <DeleteButton>
+                            <ImportanceSelect name="importance" onChange={(e) => handleChange(e, item.id)}>
+                                <option value="중요도">{item.importance || "중요도"}</option>
+                                {item.importance === "상" ? "" : <option value="상">상</option>}
+                                {item.importance === "중" ? "" : <option value="중">중</option>}
+                                {item.importance === "하" ? "" : <option value="하">하</option>}
+                            </ImportanceSelect>
+                            <AiFillDelete size={20} onClick={() => handleDelete(item.id)} />
+                        </DeleteButton>
+                    </ListContainer>
+                );
+            })}
         </Container>
-    )
-}
+    );
+};
 
-
-const Container = styled.article`
-  text-align: center;
+const Container = styled.ul`
+  display: flex;
+  flex-direction: column;
   border: 1px solid black;
+  background-color: white;
+  border-radius: 5px;
 `;
 
-const ListItem = styled.section`
+const ListContainer = styled.div`
     display: flex;
-    justify-content: flex-start;
     align-items: center;
-    border-bottom:1px solid black;
-    padding: 20px;
-    width: 100%;
-    :last-child{
-        border:0;
+    :not(:last-child){
+        border-bottom:1px solid black;
     }
-    input{
-        width: 20%;
-        text-align: left;
-    }
-    span{
-        width: 80%;
-        text-align: left;
-    }
-
 `
+
+const ListItem = styled.li<{ isDrag: boolean }>`
+  width: 760px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 8px;
+  user-select: none;
+  touch-action: none;
+  cursor: grab;
+  height: 66px;
+
+  ${(props) => props.isDrag && 'transition: transform 200ms ease 0s'};
+
+  /* &.move_up {
+    transform: translate(0, -65px);
+    z-index: 1;
+  }
+
+  &.move_down {
+    transform: translate(0, 65px);
+    z-index: 1;
+  } */
+
+  & > * {
+    pointer-events: none;
+  }
+
+  :last-child {
+    border: 0;
+  }
+  input {
+    width: 20%;
+    text-align: left;
+  }
+  span {
+    width: 80%;
+    text-align: left;
+  }
+`;
 
 const DeleteButton = styled.button`
-    cursor: pointer;
-    svg{
-        width: 50px;    
-    }
-`
+  display: flex;
+  cursor: pointer;
+  svg {
+    width: 50px;
+  }
+`;
 
 const ImportanceSelect = styled.select`
-    width: 200px;
+    width: 80px;
 `
 
 export default TodoList
+
 
