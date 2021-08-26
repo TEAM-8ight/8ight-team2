@@ -47,12 +47,12 @@ const TodoList = ({ createState, setCreateState }: TodoCreateProps) => {
                     <span>{item.taskName}</span>
                     <span>{item.status}</span>
                     <span>{item.createdAt}</span>
-                    <select name="importance" onChange={(e) => handleChange(e, item.id)}>
-                        <option value="">중요도</option>
-                        <option value="상">상</option>
-                        <option value="중">중</option>
-                        <option value="하">하</option>
-                    </select>
+                    <ImportanceSelect name="importance" onChange={(e) => handleChange(e, item.id)}>
+                        <option value="중요도">{item.importance || "중요도"}</option>
+                        {item.importance === "상" ? "" : <option value="상">상</option>}
+                        {item.importance === "중" ? "" : <option value="중">중</option>}
+                        {item.importance === "하" ? "" : <option value="하">하</option>}
+                    </ImportanceSelect>
                     <DeleteButton onClick={() => handleDelete(item.id)}>
                         <AiFillDelete size={20} />
                     </DeleteButton>
@@ -94,6 +94,10 @@ const DeleteButton = styled.button`
     svg{
         width: 50px;    
     }
+`
+
+const ImportanceSelect = styled.select`
+    width: 200px;
 `
 
 export default TodoList
