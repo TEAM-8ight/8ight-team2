@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { todoType } from './TodoInput';
+import { todoType } from '../pages/MainPage';
 import { AiFillDelete } from 'react-icons/ai';
 
 interface TodoCreateProps {
   createState: todoType[];
   setCreateState: React.Dispatch<React.SetStateAction<todoType[]>>;
+  setSelected: any;
   selected: todoType[];
 }
 
@@ -20,6 +21,7 @@ const initialDragData = {
 const TodoList = ({
   createState,
   setCreateState,
+  setSelected,
   selected,
 }: TodoCreateProps) => {
   const [dragData, setDragData] = useState<any>(initialDragData);
@@ -38,7 +40,7 @@ const TodoList = ({
       ...dragData,
       target: e.target,
       index: Number(e.target.dataset.index),
-      updateList: [...createState],
+      updateList: [...selected],
     });
 
     e.dataTransfer.setData('text/html', '');
@@ -83,8 +85,8 @@ const TodoList = ({
 
   const onDragEnd = (e: any) => {
     setIsDrag(false);
-    setCreateState([...dragData.updateList]);
-
+    setSelected([...dragData.updateList]);
+    console.log([...dragData.updateList]);
     setDragData({
       ...dragData,
       move_down: [],
@@ -97,86 +99,45 @@ const TodoList = ({
   };
 
   const handleDelete = (id: number) => {
-    setCreateState((prevState) =>
+    setSelected((prevState: any) =>
       prevState.filter((item: todoType) => item.id !== id),
     );
   };
 
   return (
     <Container onDragOver={onDragOver}>
-      {selected
-        ? selected.map((item, i) => {
-            let defaultClass = '';
+      {selected.map((item, i) => {
+        let defaultClass = '';
 
-            dragData.moveDown.includes(i) && (defaultClass = 'move_down');
+        dragData.moveDown.includes(i) && (defaultClass = 'move_down');
 
-            dragData.moveUp.includes(i) && (defaultClass = 'move_up');
+        dragData.moveUp.includes(i) && (defaultClass = 'move_up');
 
-            return (
-              <div style={{ display: 'flex' }}>
-                <ListItem
-                  key={item.id}
-                  data-index={i}
-                  draggable
-                  onDragStart={onDragStart}
-                  onDragEnter={onDragEnter}
-                  onDragLeave={onDragLeave}
-                  onDragEnd={onDragEnd}
-                  className={defaultClass}
-                  isDrag={isDrag}
-                >
-                  <input
-                    type="checkbox"
-                    name="isComplete"
-                    value={item.taskName}
-                  />
-                  <span>{item.taskName}</span>
-                  <span>{item.importance}</span>
-                  <span>{item.status}</span>
-                  <span>{item.createdAt}</span>
-                </ListItem>
-                <DeleteButton onClick={() => handleDelete(item.id)}>
-                  <AiFillDelete size={20} />
-                </DeleteButton>
-              </div>
-            );
-          })
-        : createState?.map((item, i) => {
-            let defaultClass = '';
-
-            dragData.moveDown.includes(i) && (defaultClass = 'move_down');
-
-            dragData.moveUp.includes(i) && (defaultClass = 'move_up');
-
-            return (
-              <div style={{ display: 'flex' }}>
-                <ListItem
-                  key={item.id}
-                  data-index={i}
-                  draggable
-                  onDragStart={onDragStart}
-                  onDragEnter={onDragEnter}
-                  onDragLeave={onDragLeave}
-                  onDragEnd={onDragEnd}
-                  className={defaultClass}
-                  isDrag={isDrag}
-                >
-                  <input
-                    type="checkbox"
-                    name="isComplete"
-                    value={item.taskName}
-                  />
-                  <span>{item.taskName}</span>
-                  <span>{item.importance}</span>
-                  <span>{item.status}</span>
-                  <span>{item.createdAt}</span>
-                </ListItem>
-                <DeleteButton onClick={() => handleDelete(item.id)}>
-                  <AiFillDelete size={20} />
-                </DeleteButton>
-              </div>
-            );
-          })}
+        return (
+          <div style={{ display: 'flex' }}>
+            <ListItem
+              key={item.id}
+              data-index={i}
+              draggable
+              onDragStart={onDragStart}
+              onDragEnter={onDragEnter}
+              onDragLeave={onDragLeave}
+              onDragEnd={onDragEnd}
+              className={defaultClass}
+              isDrag={isDrag}
+            >
+              <input type="checkbox" name="isComplete" value={item.taskName} />
+              <span>{item.taskName}</span>
+              <span>{item.importance}</span>
+              <span>{item.status}</span>
+              <span>{item.createdAt}</span>
+            </ListItem>
+            <DeleteButton onClick={() => handleDelete(item.id)}>
+              <AiFillDelete size={20} />
+            </DeleteButton>
+          </div>
+        );
+      })}
     </Container>
   );
 };
