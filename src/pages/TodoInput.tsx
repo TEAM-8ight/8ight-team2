@@ -100,7 +100,11 @@ const TodoInput = ({ selected }: any) => {
         {errorMsg && <ErrorMsg>{errorMsg}</ErrorMsg>}
       </CreateForm>
 
-      <TodoList createState={createState} setCreateState={setCreateState} />
+      <TodoList
+        selected={selected}
+        createState={createState}
+        setCreateState={setCreateState}
+      />
     </Container>
   );
 };

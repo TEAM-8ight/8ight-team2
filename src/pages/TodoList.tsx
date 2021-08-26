@@ -6,6 +6,7 @@ import { AiFillDelete } from 'react-icons/ai';
 interface TodoCreateProps {
   createState: todoType[];
   setCreateState: React.Dispatch<React.SetStateAction<todoType[]>>;
+  selected: todoType[];
 }
 
 const initialDragData = {
@@ -16,7 +17,11 @@ const initialDragData = {
   updateList: [],
 };
 
-const TodoList = ({ createState, setCreateState }: TodoCreateProps) => {
+const TodoList = ({
+  createState,
+  setCreateState,
+  selected,
+}: TodoCreateProps) => {
   const [dragData, setDragData] = useState<any>(initialDragData);
   const [isDrag, setIsDrag] = useState<boolean>(false);
 
@@ -101,37 +106,79 @@ const TodoList = ({ createState, setCreateState }: TodoCreateProps) => {
 
   return (
     <Container onDragOver={onDragOver}>
-      {createState.map((item, i) => {
-        let defaultClass = '';
+      {selected
+        ? selected.map((item, i) => {
+            let defaultClass = '';
 
-        dragData.moveDown.includes(i) && (defaultClass = 'move_down');
+            dragData.moveDown.includes(i) && (defaultClass = 'move_down');
 
-        dragData.moveUp.includes(i) && (defaultClass = 'move_up');
+            dragData.moveUp.includes(i) && (defaultClass = 'move_up');
 
-        return (
-          <div style={{ display: 'flex' }}>
-            <ListItem
-              key={item.id}
-              data-index={i}
-              draggable
-              onDragStart={onDragStart}
-              onDragEnter={onDragEnter}
-              onDragLeave={onDragLeave}
-              onDragEnd={onDragEnd}
-              className={defaultClass}
-              isDrag={isDrag}
-            >
-              <input type="checkbox" name="isComplete" value={item.taskName} />
-              <span>{item.taskName}</span>
-              <span>{item.status}</span>
-              <span>{item.createdAt}</span>
-            </ListItem>
-            <DeleteButton onClick={() => handleDelete(item.id)}>
-              <AiFillDelete size={20} />
-            </DeleteButton>
-          </div>
-        );
-      })}
+            return (
+              <div style={{ display: 'flex' }}>
+                <ListItem
+                  key={item.id}
+                  data-index={i}
+                  draggable
+                  onDragStart={onDragStart}
+                  onDragEnter={onDragEnter}
+                  onDragLeave={onDragLeave}
+                  onDragEnd={onDragEnd}
+                  className={defaultClass}
+                  isDrag={isDrag}
+                >
+                  <input
+                    type="checkbox"
+                    name="isComplete"
+                    value={item.taskName}
+                  />
+                  <span>{item.taskName}</span>
+                  <span>{item.importance}</span>
+                  <span>{item.status}</span>
+                  <span>{item.createdAt}</span>
+                </ListItem>
+                <DeleteButton onClick={() => handleDelete(item.id)}>
+                  <AiFillDelete size={20} />
+                </DeleteButton>
+              </div>
+            );
+          })
+        : createState.map((item, i) => {
+            let defaultClass = '';
+
+            dragData.moveDown.includes(i) && (defaultClass = 'move_down');
+
+            dragData.moveUp.includes(i) && (defaultClass = 'move_up');
+
+            return (
+              <div style={{ display: 'flex' }}>
+                <ListItem
+                  key={item.id}
+                  data-index={i}
+                  draggable
+                  onDragStart={onDragStart}
+                  onDragEnter={onDragEnter}
+                  onDragLeave={onDragLeave}
+                  onDragEnd={onDragEnd}
+                  className={defaultClass}
+                  isDrag={isDrag}
+                >
+                  <input
+                    type="checkbox"
+                    name="isComplete"
+                    value={item.taskName}
+                  />
+                  <span>{item.taskName}</span>
+                  <span>{item.importance}</span>
+                  <span>{item.status}</span>
+                  <span>{item.createdAt}</span>
+                </ListItem>
+                <DeleteButton onClick={() => handleDelete(item.id)}>
+                  <AiFillDelete size={20} />
+                </DeleteButton>
+              </div>
+            );
+          })}
     </Container>
   );
 };
