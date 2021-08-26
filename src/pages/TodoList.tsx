@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { todoType } from './TodoInput';
 import { AiFillDelete } from "react-icons/ai"
@@ -23,6 +23,22 @@ const TodoList = ({ createState, setCreateState }: TodoCreateProps) => {
 
     }
 
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>, id: number) => {
+        const { value } = e.target
+        setCreateState((prevState) => prevState.map((todo: todoType) => {
+            if (todo.id === id) {
+                return {
+                    ...todo,
+                    importance: value
+                }
+            }
+            return todo
+        }))
+    }
+
+
+
+
     return (
         <Container>
             {createState.map((item) => (
@@ -31,6 +47,12 @@ const TodoList = ({ createState, setCreateState }: TodoCreateProps) => {
                     <span>{item.taskName}</span>
                     <span>{item.status}</span>
                     <span>{item.createdAt}</span>
+                    <select name="importance" onChange={(e) => handleChange(e, item.id)}>
+                        <option value="">중요도</option>
+                        <option value="상">상</option>
+                        <option value="중">중</option>
+                        <option value="하">하</option>
+                    </select>
                     <DeleteButton onClick={() => handleDelete(item.id)}>
                         <AiFillDelete size={20} />
                     </DeleteButton>
