@@ -104,6 +104,24 @@ const TodoList = ({
     );
   };
 
+  const handleChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    id: number,
+  ) => {
+    const { value } = e.target;
+    setSelected((prevState: todoType[]) =>
+      prevState.map((todo: todoType) => {
+        if (todo.id === id) {
+          return {
+            ...todo,
+            importance: value,
+          };
+        }
+        return todo;
+      }),
+    );
+  };
+
   return (
     <Container onDragOver={onDragOver}>
       {selected.map((item, i) => {
@@ -114,7 +132,7 @@ const TodoList = ({
         dragData.moveUp.includes(i) && (defaultClass = 'move_up');
 
         return (
-          <div style={{ display: 'flex' }}>
+          <ListContainer>
             <ListItem
               key={item.id}
               data-index={i}
@@ -135,7 +153,16 @@ const TodoList = ({
             <DeleteButton onClick={() => handleDelete(item.id)}>
               <AiFillDelete size={20} />
             </DeleteButton>
-          </div>
+            <ImportanceSelect
+              name="importance"
+              onChange={(e) => handleChange(e, item.id)}
+            >
+              <option value="중요도">{item.importance || '중요도'}</option>
+              {item.importance === '상' ? '' : <option value="상">상</option>}
+              {item.importance === '중' ? '' : <option value="중">중</option>}
+              {item.importance === '하' ? '' : <option value="하">하</option>}
+            </ImportanceSelect>
+          </ListContainer>
         );
       })}
     </Container>
@@ -145,10 +172,17 @@ const TodoList = ({
 const Container = styled.ul`
   display: flex;
   flex-direction: column;
-  text-align: center;
   border: 1px solid black;
   background-color: white;
   border-radius: 5px;
+`;
+
+const ListContainer = styled.div`
+  display: flex;
+  align-items: center;
+  :not(:last-child) {
+    border-bottom: 1px solid black;
+  }
 `;
 
 const ListItem = styled.li<{ isDrag: boolean }>`
@@ -157,7 +191,6 @@ const ListItem = styled.li<{ isDrag: boolean }>`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid black;
   padding: 15px 8px;
   user-select: none;
   touch-action: none;
@@ -194,10 +227,15 @@ const ListItem = styled.li<{ isDrag: boolean }>`
 `;
 
 const DeleteButton = styled.button`
+  display: flex;
   cursor: pointer;
   svg {
     width: 50px;
   }
+`;
+
+const ImportanceSelect = styled.select`
+  width: 80px;
 `;
 
 export default TodoList;
