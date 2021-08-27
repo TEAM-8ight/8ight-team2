@@ -8,6 +8,7 @@ interface TodoCreateProps {
   setCreateState: React.Dispatch<React.SetStateAction<todoType[]>>;
   setSelected: any;
   selected: todoType[];
+  filterByImportance: any;
 }
 
 const initialDragData = {
@@ -22,6 +23,7 @@ const TodoList = ({
   createState,
   setCreateState,
   selected,
+  filterByImportance,
 }: TodoCreateProps) => {
   const [dragData, setDragData] = useState<any>(initialDragData);
   const [isDrag, setIsDrag] = useState<boolean>(false);
@@ -145,86 +147,99 @@ const TodoList = ({
   const toggleTodo = (id: number) => {
     setCreateState((prevState) =>
       prevState.map((todo) =>
-        todo.id === id ? { ...todo, done: !todo.done } : todo,
+        todo.id === id ? { ...todo, isComplete: !todo.isComplete } : todo,
       ),
     );
   };
 
   return (
     <Container onDragOver={onDragOver}>
-      {createState?.map((item, i) => {
-        let isItemFiltered = isFiltered(item.status);
+      {createState
+        ?.filter((val) => {
+          if (filterByImportance == '') {
+            return val;
+          } else if (val.importance.includes(filterByImportance)) {
+            return val;
+          }
+        })
+        .map((item, i) => {
+          let isItemFiltered = isFiltered(item.status);
 
-        let defaultClass = '';
+          let defaultClass = '';
 
-        dragData.moveDown.includes(i) && (defaultClass = 'move_down');
+          dragData.moveDown.includes(i) && (defaultClass = 'move_down');
 
-        dragData.moveUp.includes(i) && (defaultClass = 'move_up');
+          dragData.moveUp.includes(i) && (defaultClass = 'move_up');
 
-        return (
-          <ListContainer
-            key={item.id}
-            style={
-              isItemFiltered ? { background: 'green' } : { background: 'none' }
-            }
-          >
-            <CheckCircle done={item.done} onClick={() => toggleTodo(item.id)}>
-              {item.done && (
-                <AiOutlineCheckCircle style={{ fontSize: '24px' }} />
-              )}
-            </CheckCircle>
-
-            <ListItem
-              done={item.done}
-              data-index={i}
-              draggable
-              onDragStart={onDragStart}
-              onDragEnter={onDragEnter}
-              onDragLeave={onDragLeave}
-              onDragEnd={onDragEnd}
-              className={defaultClass}
-              isDrag={isDrag}
+          return (
+            <ListContainer
+              key={item.id}
+              style={
+                isItemFiltered
+                  ? { background: '#36cfc9' }
+                  : { background: 'none' }
+              }
             >
-              <span>{item.taskName}</span>
-              <span>{item.createdAt}</span>
-            </ListItem>
-            <StatusSelect
-              name="status"
-              onChange={(e) => handleStatusChange(e, item.id)}
-            >
-              <option value="시작안함">{item.status || '시작안함'}</option>
-              {item.status === '시작안함' ? (
-                ''
-              ) : (
-                <option value="시작안함">시작안함</option>
-              )}
-              {item.status === '완료함' ? (
-                ''
-              ) : (
-                <option value="완료함">완료함</option>
-              )}
-              {item.status === '진행중' ? (
-                ''
-              ) : (
-                <option value="진행중">진행중</option>
-              )}
-            </StatusSelect>
+              <CheckCircle
+                done={item.isComplete}
+                onClick={() => toggleTodo(item.id)}
+              >
+                {item.isComplete && (
+                  <AiOutlineCheckCircle style={{ fontSize: '24px' }} />
+                )}
+              </CheckCircle>
 
-            <ImportanceSelect
-              name="importance"
-              onChange={(e) => handleImportanceChange(e, item.id)}
-            >
-              <option value="중요도">{item.importance || '중요도'}</option>
-              {item.importance === '상' ? '' : <option value="상">상</option>}
-              {item.importance === '중' ? '' : <option value="중">중</option>}
-              {item.importance === '하' ? '' : <option value="하">하</option>}
-            </ImportanceSelect>
-            <DeleteButton onClick={() => handleDelete(item.id)}>
-              <AiFillDelete size={20} />
-            </DeleteButton>
-          </ListContainer>
-        );
-      })}
+              <ListItem
+                done={item.isComplete}
+                data-index={i}
+                draggable
+                onDragStart={onDragStart}
+                onDragEnter={onDragEnter}
+                onDragLeave={onDragLeave}
+                onDragEnd={onDragEnd}
+                className={defaultClass}
+                isDrag={isDrag}
+              >
+                <span>{item.taskName}</span>
+                <span>{item.createdAt}</span>
+              </ListItem>
+              <StatusSelect
+                name="status"
+                onChange={(e) => handleStatusChange(e, item.id)}
+              >
+                <option value="시작안함">{item.status || '시작안함'}</option>
+                {item.status === '시작안함' ? (
+                  ''
+                ) : (
+                  <option value="시작안함">시작안함</option>
+                )}
+                {item.status === '완료함' ? (
+                  ''
+                ) : (
+                  <option value="완료함">완료함</option>
+                )}
+                {item.status === '진행중' ? (
+                  ''
+                ) : (
+                  <option value="진행중">진행중</option>
+                )}
+              </StatusSelect>
+
+              <ImportanceSelect
+                name="importance"
+                onChange={(e) => handleImportanceChange(e, item.id)}
+              >
+                <option value="중요도">{item.importance || '중요도'}</option>
+                {item.importance === '상' ? '' : <option value="상">상</option>}
+                {item.importance === '중' ? '' : <option value="중">중</option>}
+                {item.importance === '하' ? '' : <option value="하">하</option>}
+              </ImportanceSelect>
+              <DeleteButton onClick={() => handleDelete(item.id)}>
+                <AiFillDelete size={20} />
+              </DeleteButton>
+            </ListContainer>
+          );
+        })}
     </Container>
   );
 };
