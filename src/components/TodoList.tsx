@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import styled, { css } from 'styled-components';
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import { todoType } from '../pages/MainPage';
-import { AiFillDelete, AiOutlineCheckCircle } from 'react-icons/ai';
+import { AiFillDelete } from 'react-icons/ai';
 
 interface TodoCreateProps {
   createState: todoType[];
@@ -139,22 +139,16 @@ const TodoList = ({
     );
   };
 
-  const isFiltered = (status: any) => {
+  const isFiltered = (status: any, importance: any) => {
     return status === selected;
   };
 
-  const toggleTodo = (id: number) => {
-    setCreateState((prevState) =>
-      prevState.map((todo) =>
-        todo.id === id ? { ...todo, done: !todo.done } : todo,
-      ),
-    );
-  };
+  console.log(selected);
 
   return (
     <Container onDragOver={onDragOver}>
       {createState?.map((item, i) => {
-        let isItemFiltered = isFiltered(item.status);
+        let isItemFiltered = isFiltered(item.status, item.importance);
 
         let defaultClass = '';
 
@@ -169,12 +163,9 @@ const TodoList = ({
               isItemFiltered ? { background: 'green' } : { background: 'none' }
             }
           >
-            <CheckCircle done={item.done} onClick={() => toggleTodo(item.id)}>
-              {item.done && <AiOutlineCheckCircle />}
-            </CheckCircle>
+            <input type="checkbox" name="isComplete" value={item.taskName} />
 
             <ListItem
-              done={item.done}
               data-index={i}
               draggable
               onDragStart={onDragStart}
@@ -239,35 +230,35 @@ const Container = styled.ul`
 const ListContainer = styled.div`
   display: flex;
   align-items: center;
-
-  padding: 10px 20px;
-
   :not(:last-child) {
-    border-bottom: 1px solid lightgray;
+    border-bottom: 1px solid black;
   }
+  padding: 10px 20px;
 `;
 
-const ListItem = styled.li<{ isDrag: boolean; done: boolean }>`
+const ListItem = styled.li<{ isDrag: boolean }>`
   width: 760px;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   padding: 15px 8px;
   user-select: none;
   touch-action: none;
   cursor: grab;
   height: 66px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #119955;
-  ${(props) =>
-    props.done &&
-    css`
-      color: #ced4da;
-      text-decoration: line-through;
-    `}
 
   ${(props) => props.isDrag && 'transition: transform 200ms ease 0s'};
+
+  /* &.move_up {
+    transform: translate(0, -65px);
+    z-index: 1;
+  }
+
+  &.move_down {
+    transform: translate(0, 65px);
+    z-index: 1;
+  } */
 
   & > * {
     pointer-events: none;
@@ -301,26 +292,6 @@ const StatusSelect = styled.select`
 
 const ImportanceSelect = styled.select`
   width: 100px;
-`;
-
-const CheckCircle = styled.div<{ done: boolean }>`
-  width: 20px;
-  height: 20px;
-  border-radius: 16px;
-  border: 1px solid #33bb77;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 20px;
-  cursor: pointer;
-
-  ${(props) =>
-    props.done &&
-    css`
-      border: 1px solid #dddddd;
-      color: #dddddd;
-    `}
 `;
 
 export default TodoList;

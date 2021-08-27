@@ -11,19 +11,39 @@ import {
 const Header = ({ todos, handleStatusFilter }: any) => {
   const [filterByImportance, setFilterByImportance] = useState<any>([]);
   const [filterByStatus, setFilterByStatus] = useState<any>([...todos]);
-
+  const [filteredTodos, setFilteredTodos] = useState<any>([...todos]);
   const handleFilterByImportance = (
     e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     setFilterByImportance(e.target.value);
 
+    // const matchValues = [...todos].filter((todo: any) =>
+    //   todo.importance.includes(e.target.value),
+    // );
+
+    // setFilterByImportance(matchValues);
     handleStatusFilter(e.target.value);
   };
 
   const handleFilterByStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    // const matchValues = [...todos].filter((todo: any) =>
+    //   todo.status.includes(e.target.value),
+    // );
+
     setFilterByStatus(e.target.value);
     handleStatusFilter(e.target.value);
   };
+
+  // useEffect(() => {
+  //   const matchValues = [...todos].filter(
+  //     (todo: any) =>
+  //       (!filterByImportance || todo.importance === filterByImportance) &&
+  //       (!filterByStatus || todo.status === filterByStatus),
+  //   );
+  //   console.log('matchValues', matchValues);
+  //   setFilteredTodos(matchValues);
+  //   handleStatusFilter(matchValues);
+  // }, [filterByStatus, filterByImportance]);
 
   return (
     <Nav>
