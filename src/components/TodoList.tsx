@@ -22,7 +22,6 @@ const initialDragData = {
 const TodoList = ({
   createState,
   setCreateState,
-  setSelected,
   selected,
   filterByImportance,
 }: TodoCreateProps) => {
@@ -155,31 +154,44 @@ const TodoList = ({
 
   return (
     <Container onDragOver={onDragOver}>
-      {createState
-        ?.filter((val) => {
+      {createState?.filter((val) => {
           if (filterByImportance == '') {
             return val;
           } else if (val.importance.includes(filterByImportance)) {
             return val;
           }
-        })
-        .map((item, i) => {
-          let isItemFiltered = isFiltered(item.status);
+        }).map((item, i) => {
+        let isItemFiltered = isFiltered(item.status);
 
-          let defaultClass = '';
+        let defaultClass = '';
 
-          dragData.moveDown.includes(i) && (defaultClass = 'move_down');
+        dragData.moveDown.includes(i) && (defaultClass = 'move_down');
 
-          dragData.moveUp.includes(i) && (defaultClass = 'move_up');
+        dragData.moveUp.includes(i) && (defaultClass = 'move_up');
 
-          return (
-            <ListContainer
-              key={item.id}
-              style={
-                isItemFiltered
-                  ? { background: 'green' }
-                  : { background: 'none' }
-              }
+        return (
+          <ListContainer
+            key={item.id}
+            style={
+              isItemFiltered ? { background: 'green' } : { background: 'none' }
+            }
+          >
+            <CheckCircle done={item.done} onClick={() => toggleTodo(item.id)}>
+              {item.done && (
+                <AiOutlineCheckCircle style={{ fontSize: '24px' }} />
+              )}
+            </CheckCircle>
+
+            <ListItem
+              done={item.done}
+              data-index={i}
+              draggable
+              onDragStart={onDragStart}
+              onDragEnter={onDragEnter}
+              onDragLeave={onDragLeave}
+              onDragEnd={onDragEnd}
+              className={defaultClass}
+              isDrag={isDrag}
             >
               <CheckCircle done={item.done} onClick={() => toggleTodo(item.id)}>
                 {item.done && <AiOutlineCheckCircle />}
@@ -316,7 +328,7 @@ const ImportanceSelect = styled.select`
 `;
 
 const CheckCircle = styled.div<{ done: boolean }>`
-  width: 20px;
+  width: 30px;
   height: 20px;
   border-radius: 16px;
   border: 1px solid #33bb77;
@@ -330,7 +342,7 @@ const CheckCircle = styled.div<{ done: boolean }>`
   ${(props) =>
     props.done &&
     css`
-      border: 1px solid #dddddd;
+      border: none;
       color: #dddddd;
     `}
 `;

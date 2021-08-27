@@ -99,11 +99,11 @@ const MainPage = () => {
   return (
     <Container>
       <Header
+
         todos={[...todos]}
         handleStatusFilter={handleStatusFilter}
         setFilterByImportance={setFilterByImportance}
       />
-      {/* <TodoInput selected={selected} /> */}
       <CreateForm onSubmit={handleSubmit}>
         <Input placeholder="할일 적기" value={value} onChange={handleChange} />
         <InputButton onClick={handleClick}>할일 추가</InputButton>
