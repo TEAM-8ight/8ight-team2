@@ -97,7 +97,7 @@ const MainPage = () => {
   return (
     <Container>
       <Header
-        todos={[...todos]}
+        todos={[...createState]}
         handleStatusFilter={handleStatusFilter}
         setFilterByImportance={setFilterByImportance}
       />
