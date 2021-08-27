@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { status } from '../constants/status';
-import { importance } from '../constants/importance';
+import { status } from 'constants/status';
+import { importance } from 'constants/importance';
 import {
   AiOutlineSearch,
   AiFillPushpin,
@@ -9,8 +9,9 @@ import {
 } from 'react-icons/ai';
 
 const Header = ({ todos, handleStatusFilter }: any) => {
-  const [filterByImportance, setFilterByImportance] = useState<any>([]);
-  const [filterByStatus, setFilterByStatus] = useState<any>([...todos]);
+  const [, setFilterByImportance] = useState<any>([]);
+  const [, setFilterByStatus] = useState<any>([...todos]);
+  const [completedTodos, setCompletedTodos] = useState<number>(0);
 
   const handleFilterByImportance = (
     e: React.ChangeEvent<HTMLSelectElement>,
@@ -25,6 +26,15 @@ const Header = ({ todos, handleStatusFilter }: any) => {
     handleStatusFilter(e.target.value);
   };
 
+  const onCheckCompleteTodos = () => {
+    let checkedTodos = todos.filter((todo: any) => todo.done === true);
+    setCompletedTodos(checkedTodos.length);
+  };
+
+  useEffect(() => {
+    onCheckCompleteTodos();
+  }, [todos]);
+
   return (
     <Nav>
       <NavContainer>
@@ -34,28 +44,17 @@ const Header = ({ todos, handleStatusFilter }: any) => {
         </NavLogo>
         <NavMenu>
           <NavItem>
-            <AiOutlineSearch />
+            <AiOutlineFileDone />
+            {`${completedTodos}/${todos.length}`}
           </NavItem>
           <NavItem>
-            <AiOutlineFileDone />0 / 5
-          </NavItem>
-          <NavItem>
-            {/* Todo: 스타일 개선 */}
-            <Select
-              name="importance"
-              // defaultValue={filterByImportance}
-              onChange={handleFilterByImportance}
-            >
+            <Select name="importance" onChange={handleFilterByImportance}>
               <option value="">중요도 선택</option>
               <option value={importance.HIGH}>상</option>
               <option value={importance.INTERMEDIATE}>중</option>
               <option value={importance.LOW}>하</option>
             </Select>
-            <Select
-              name="status"
-              // defaultValue={filterByStatus}
-              onChange={handleFilterByStatus}
-            >
+            <Select name="status" onChange={handleFilterByStatus}>
               <option value="">상태 선택</option>
               <option value={status.NOT_STARTED}>시작안함</option>
               <option value={status.ONGOING}>진행중</option>
