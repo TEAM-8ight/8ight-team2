@@ -8,16 +8,13 @@ import {
   AiOutlineFileDone,
 } from 'react-icons/ai';
 
-const Header = ({ todos, handleStatusFilter }: any) => {
-  const [filterByImportance, setFilterByImportance] = useState<any>([]);
+const Header = ({ todos, handleStatusFilter, setFilterByImportance }: any) => {
   const [filterByStatus, setFilterByStatus] = useState<any>([...todos]);
 
   const handleFilterByImportance = (
     e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     setFilterByImportance(e.target.value);
-
-    handleStatusFilter(e.target.value);
   };
 
   const handleFilterByStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {

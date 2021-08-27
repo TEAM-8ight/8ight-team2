@@ -27,7 +27,7 @@ const getFormatDate = (date: Date) => {
 const MainPage = () => {
   const todos = JSON.parse(localStorage.getItem('todos') || '[]');
   const [selected, setSelected] = useState<any>('');
-
+  const [filterByImportance, setFilterByImportance] = useState<any>([]);
   let initialTodos: todoType[] = [];
   const id: number = Date.now();
 
@@ -98,7 +98,11 @@ const MainPage = () => {
 
   return (
     <Container>
-      <Header todos={[...todos]} handleStatusFilter={handleStatusFilter} />
+      <Header
+        todos={[...todos]}
+        handleStatusFilter={handleStatusFilter}
+        setFilterByImportance={setFilterByImportance}
+      />
       {/* <TodoInput selected={selected} /> */}
       <CreateForm onSubmit={handleSubmit}>
         <Input placeholder="할일 적기" value={value} onChange={handleChange} />
@@ -110,6 +114,7 @@ const MainPage = () => {
         createState={createState}
         setSelected={setSelected}
         setCreateState={setCreateState}
+        filterByImportance={filterByImportance}
       />
     </Container>
   );
