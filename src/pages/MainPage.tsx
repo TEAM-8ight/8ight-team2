@@ -12,7 +12,6 @@ export interface todoType {
   createdAt: string;
   updatedAt: string;
   importance: string;
-  done: boolean;
 }
 
 const getFormatDate = (date: Date) => {
@@ -54,7 +53,6 @@ const MainPage = () => {
       createdAt: getFormatDate(today),
       updatedAt: '',
       importance: '',
-      done: false,
     });
 
     setValue('');
@@ -99,7 +97,6 @@ const MainPage = () => {
   return (
     <Container>
       <Header
-
         todos={[...todos]}
         handleStatusFilter={handleStatusFilter}
         setFilterByImportance={setFilterByImportance}

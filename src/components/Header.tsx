@@ -2,14 +2,11 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { status } from 'constants/status';
 import { importance } from 'constants/importance';
-import {
-  AiOutlineSearch,
-  AiFillPushpin,
-  AiOutlineFileDone,
-} from 'react-icons/ai';
+import { AiFillPushpin, AiOutlineFileDone } from 'react-icons/ai';
 
 const Header = ({ todos, handleStatusFilter, setFilterByImportance }: any) => {
-  const [filterByStatus, setFilterByStatus] = useState<any>([...todos]);
+  const [, setFilterByStatus] = useState<any>([...todos]);
+  const [completedTodos, setCompletedTodos] = useState<number>(0);
 
   const handleFilterByImportance = (
     e: React.ChangeEvent<HTMLSelectElement>,
