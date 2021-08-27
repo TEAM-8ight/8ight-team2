@@ -4,8 +4,6 @@ import TodoList from '../components/TodoList';
 import styled from 'styled-components';
 import { status } from 'constants/status';
 
-
-
 export interface todoType {
   id: number;
   taskName: string;
@@ -27,17 +25,18 @@ const getFormatDate = (date: Date) => {
 
 const MainPage = () => {
   const todos = JSON.parse(localStorage.getItem('todos') || '[]');
+  const [selected, setSelected] = useState<any>('');
 
-  const [selected, setSelected] = useState<any>([...todos]);
-  const handleStatusFilter = (filteredTodos: any) => {
-    setSelected(filteredTodos);
-  };
   let initialTodos: todoType[] = [];
   const id: number = Date.now();
 
   const [value, setValue] = useState<string>('');
   const [createState, setCreateState] = useState(initialTodos);
   const [errorMsg, setErrorMsg] = useState<string>('');
+
+  const handleStatusFilter = (filteredTodos: any) => {
+    setSelected(filteredTodos);
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -53,7 +52,7 @@ const MainPage = () => {
       isComplete: false,
       createdAt: getFormatDate(today),
       updatedAt: '',
-      importance: "",
+      importance: '',
     });
 
     setValue('');
@@ -68,7 +67,7 @@ const MainPage = () => {
   };
 
   const createList = (todo: todoType) => {
-    setSelected((prevState: any) =>
+    setCreateState((prevState: any) =>
       [
         {
           ...todo,
@@ -87,8 +86,8 @@ const MainPage = () => {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(selected));
-  }, [selected]);
+    localStorage.setItem('todos', JSON.stringify(createState));
+  }, [createState]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;

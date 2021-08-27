@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { todoType } from '../pages/MainPage';
 import { AiFillDelete } from 'react-icons/ai';
@@ -40,7 +40,7 @@ const TodoList = ({
       ...dragData,
       target: e.target,
       index: Number(e.target.dataset.index),
-      updateList: [...selected],
+      updateList: [...createState],
     });
 
     e.dataTransfer.setData('text/html', '');
@@ -85,8 +85,8 @@ const TodoList = ({
 
   const onDragEnd = (e: any) => {
     setIsDrag(false);
-    setSelected([...dragData.updateList]);
-    console.log([...dragData.updateList]);
+    setCreateState([...dragData.updateList]);
+
     setDragData({
       ...dragData,
       move_down: [],
@@ -99,7 +99,7 @@ const TodoList = ({
   };
 
   const handleDelete = (id: number) => {
-    setSelected((prevState: any) =>
+    setCreateState((prevState: any) =>
       prevState.filter((item: todoType) => item.id !== id),
     );
   };
@@ -108,13 +108,12 @@ const TodoList = ({
     e: React.ChangeEvent<HTMLSelectElement>,
     id: number,
   ) => {
-    const { value } = e.target;
-    setSelected((prevState: todoType[]) =>
+    setCreateState((prevState: todoType[]) =>
       prevState.map((todo: todoType) => {
         if (todo.id === id) {
           return {
             ...todo,
-            importance: value,
+            importance: e.target.value,
           };
         }
         return todo;
@@ -122,9 +121,12 @@ const TodoList = ({
     );
   };
 
-  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>, id: number,) => {
+  const handleStatusChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    id: number,
+  ) => {
     const { value } = e.target;
-    setSelected((prevState: todoType[]) =>
+    setCreateState((prevState: todoType[]) =>
       prevState.map((todo: todoType) => {
         if (todo.id === id) {
           return {
@@ -133,13 +135,21 @@ const TodoList = ({
           };
         }
         return todo;
-      })
-    )
-  }
+      }),
+    );
+  };
+
+  const isFiltered = (status: any, importance: any) => {
+    return status === selected;
+  };
+
+  console.log(selected);
 
   return (
     <Container onDragOver={onDragOver}>
-      {selected.map((item, i) => {
+      {createState?.map((item, i) => {
+        let isItemFiltered = isFiltered(item.status, item.importance);
+
         let defaultClass = '';
 
         dragData.moveDown.includes(i) && (defaultClass = 'move_down');
@@ -147,7 +157,12 @@ const TodoList = ({
         dragData.moveUp.includes(i) && (defaultClass = 'move_up');
 
         return (
-          <ListContainer key={item.id}>
+          <ListContainer
+            key={item.id}
+            style={
+              isItemFiltered ? { background: 'green' } : { background: 'none' }
+            }
+          >
             <input type="checkbox" name="isComplete" value={item.taskName} />
 
             <ListItem
@@ -163,18 +178,33 @@ const TodoList = ({
               <span>{item.taskName}</span>
               <span>{item.createdAt}</span>
             </ListItem>
-            <StatusSelect name="status" onChange={(e) => handleStatusChange(e, item.id)}>
-              <option value="시작안함">{item.status || "시작안함"}</option>
-              {item.status === '시작안함' ? '' : <option value="시작안함">시작안함</option>}
-              {item.status === '완료' ? '' : <option value="완료">완료</option>}
-              {item.status === '진행중' ? '' : <option value="진행중">진행중</option>}
+            <StatusSelect
+              name="status"
+              onChange={(e) => handleStatusChange(e, item.id)}
+            >
+              <option value="시작안함">{item.status || '시작안함'}</option>
+              {item.status === '시작안함' ? (
+                ''
+              ) : (
+                <option value="시작안함">시작안함</option>
+              )}
+              {item.status === '완료함' ? (
+                ''
+              ) : (
+                <option value="완료함">완료함</option>
+              )}
+              {item.status === '진행중' ? (
+                ''
+              ) : (
+                <option value="진행중">진행중</option>
+              )}
             </StatusSelect>
 
             <ImportanceSelect
               name="importance"
               onChange={(e) => handleImportanceChange(e, item.id)}
             >
-              <option value="중요도">{item.importance || "중요도"}</option>
+              <option value="중요도">{item.importance || '중요도'}</option>
               {item.importance === '상' ? '' : <option value="상">상</option>}
               {item.importance === '중' ? '' : <option value="중">중</option>}
               {item.importance === '하' ? '' : <option value="하">하</option>}
@@ -256,9 +286,9 @@ const DeleteButton = styled.button`
 `;
 
 const StatusSelect = styled.select`
-width: 80px;
-margin-right: 10px;
-`
+  width: 80px;
+  margin-right: 10px;
+`;
 
 const ImportanceSelect = styled.select`
   width: 100px;
