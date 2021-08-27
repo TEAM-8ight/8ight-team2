@@ -21,7 +21,6 @@ const initialDragData = {
 const TodoList = ({
   createState,
   setCreateState,
-  setSelected,
   selected,
 }: TodoCreateProps) => {
   const [dragData, setDragData] = useState<any>(initialDragData);
@@ -170,7 +169,9 @@ const TodoList = ({
             }
           >
             <CheckCircle done={item.done} onClick={() => toggleTodo(item.id)}>
-              {item.done && <AiOutlineCheckCircle />}
+              {item.done && (
+                <AiOutlineCheckCircle style={{ fontSize: '24px' }} />
+              )}
             </CheckCircle>
 
             <ListItem
@@ -304,7 +305,7 @@ const ImportanceSelect = styled.select`
 `;
 
 const CheckCircle = styled.div<{ done: boolean }>`
-  width: 20px;
+  width: 30px;
   height: 20px;
   border-radius: 16px;
   border: 1px solid #33bb77;
@@ -318,7 +319,7 @@ const CheckCircle = styled.div<{ done: boolean }>`
   ${(props) =>
     props.done &&
     css`
-      border: 1px solid #dddddd;
+      border: none;
       color: #dddddd;
     `}
 `;
