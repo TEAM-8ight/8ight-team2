@@ -24,7 +24,6 @@ const getFormatDate = (date: Date) => {
 };
 
 const MainPage = () => {
-  const todos = JSON.parse(localStorage.getItem('todos') || '[]');
   const [selected, setSelected] = useState<any>('');
   const [filterByImportance, setFilterByImportance] = useState<any>([]);
   let initialTodos: todoType[] = [];
