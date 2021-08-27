@@ -20,7 +20,7 @@ const Header = ({ todos, handleStatusFilter, setFilterByImportance }: any) => {
   };
 
   const onCheckCompleteTodos = () => {
-    let checkedTodos = todos.filter((todo: any) => todo.done === true);
+    let checkedTodos = todos.filter((todo: any) => todo.isComplete === true);
     setCompletedTodos(checkedTodos.length);
   };
 
