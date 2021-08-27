@@ -17,21 +17,21 @@ const Header = ({ todos, handleStatusFilter }: any) => {
   ) => {
     setFilterByImportance(e.target.value);
 
-    const matchValues = [...filterByStatus].filter((todo: any) =>
-      todo.importance.includes(e.target.value),
-    );
+    // const matchValues = [...todos].filter((todo: any) =>
+    //   todo.importance.includes(e.target.value),
+    // );
 
-    setFilterByImportance(matchValues);
-    handleStatusFilter(matchValues);
+    // setFilterByImportance(matchValues);
+    handleStatusFilter(e.target.value);
   };
 
   const handleFilterByStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const matchValues = [...todos].filter((todo: any) =>
-      todo.status.includes(e.target.value),
-    );
+    // const matchValues = [...todos].filter((todo: any) =>
+    //   todo.status.includes(e.target.value),
+    // );
 
-    setFilterByStatus(matchValues);
-    handleStatusFilter(matchValues);
+    setFilterByStatus(e.target.value);
+    handleStatusFilter(e.target.value);
   };
 
   // useEffect(() => {
